@@ -5,13 +5,13 @@ services:
     build:
       dockerfile: Dockerfile
       context: "./backend"
-    # depends_on:
-    #   - redis
+    depends_on:
+      - redis-abc
     volumes:
       - /app/node_modules
       - ./backend:/app
     ports:
-      - 3000:3000
+      - 8081:8081
     networks:
       - redis
 
