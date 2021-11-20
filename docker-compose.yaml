@@ -1,6 +1,6 @@
 version: "3"
 services:
-  redis:
+  redis-abc:
     image: redis:latest
     volumes:
       - ./data/redis:/data
@@ -15,12 +15,12 @@ services:
       dockerfile: Dockerfile
       context: "./backend"
     depends_on:
-      - redis
+      - redis-abc
     volumes:
       - /app/node_modules
       - ./backend:/app
     ports:
-      - 3000:3000
+      - 8081:8081
     networks:
       - redis
 

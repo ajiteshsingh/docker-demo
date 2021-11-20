@@ -2,16 +2,33 @@ const express = require("express");
 const redis = require("redis");
 
 const app = express();
-const client = redis.createClient(host.docker.internal, 6379);
+app.use(express.json());
+const client = redis.createClient({ host: "redis-abc", port: 6379 });
 
 //Set initial visits
 client.set("visits", 0);
 
 //defining the root endpoint
-app.get("/", (req, res) => {
-  client.get("visits", (err, visits) => {
-    res.send("Number of visits is: " + visits + 1);
-    client.set("visits", parseInt(visits) + 1);
+app.post("/vote", (req, res) => {
+  const payload = req.body;
+  client.get(payload.name, (err, count) => {
+    console.log(`${payload.name} - ${count}`);
+    if (!count) {
+      count = 0;
+    }
+    const newCount = (parseInt(count) + 1).toString();
+    console.log(`New Count - ${newCount}`);
+    client.set(payload.name, newCount, (err, reply) => {
+      console.log(reply);
+      res.send(newCount);
+    });
+  });
+});
+
+app.get("/vote", (req, res) => {
+  const payload = req.query;
+  client.get(payload.name, (err, count) => {
+    res.send(count);
   });
 });
 
