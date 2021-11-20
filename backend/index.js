@@ -2,7 +2,6 @@ const express = require("express");
 const redis = require("redis");
 
 const app = express();
-app.use(express.json());
 const client = redis.createClient({ host: "redis-abc", port: 6379 });
 
 //Set initial visits

@@ -1,14 +1,5 @@
 version: "3"
 services:
-  redis-abc:
-    image: redis:latest
-    volumes:
-      - ./data/redis:/data
-    ports:
-      - 6379:6379
-    networks:
-      - redis
-
   backend:
     restart: on-failure
     build:
@@ -21,6 +12,15 @@ services:
       - ./backend:/app
     ports:
       - 8081:8081
+    networks:
+      - redis
+
+  redis-abc:
+    image: redis:latest
+    volumes:
+      - ./data/redis:/data
+    ports:
+      - 6379:6379
     networks:
       - redis
 
