@@ -4,6 +4,7 @@ import VotingCard from "./components/VotingCard";
 import teamsJson from "./lib/teams.json";
 import "./assets/scss/styles.scss";
 import "bootstrap/dist/css/bootstrap.css";
+import axios from 'axios';
 
 function App() {
   let [teams, setTeams] = useState([]);
@@ -12,13 +13,21 @@ function App() {
     setTeams(teamsJson);
   }, []);
 
-  function incrementVoteCount(teamId) {
-    teams = teams.map((team) => {
-      if (team._id === teamId) {
-        team.votes = team.votes + 1;
-      }
-      return team;
+  async function incrementVoteCount(teamId) {
+    const team = teams.find((team) => team._id === teamId);
+    team.votes += 1;
+
+    // teams = teams.map((team) => {
+    //   if (team._id === teamId) {
+    //     team.votes += 1;
+    //   }
+    //   return team;
+    // });
+
+    const votes = await axios.post('http://localhost:8081/vote', {
+      name: team._id
     });
+    team.votes = votes;
     setTeams(teams);
   }
 

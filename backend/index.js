@@ -1,32 +1,43 @@
 const express = require("express");
 const redis = require("redis");
+var cors = require('cors')
 
 const app = express();
-const client = redis.createClient({ host: "redis-abc", port: 6379 });
+const redisClient = redis.createClient({ host: "redis-abc", port: 6379 });
+app.use(express.json());
+app.use(cors())
 
 //Set initial visits
-client.set("visits", 0);
+redisClient.set("visits", 0);
 
 //defining the root endpoint
 app.post("/vote", (req, res) => {
   const payload = req.body;
-  client.get(payload.name, (err, count) => {
-    console.log(`${payload.name} - ${count}`);
+  const teamName = payload.name
+  redisClient.get(teamName, (err, count) => {
+    console.log(`${teamName} - ${count}`);
     if (!count) {
       count = 0;
     }
     const newCount = (parseInt(count) + 1).toString();
     console.log(`New Count - ${newCount}`);
-    client.set(payload.name, newCount, (err, reply) => {
+    redisClient.set(teamName, newCount, (err, reply) => {
       console.log(reply);
       res.send(newCount);
     });
   });
 });
 
+app.get("/", (req, res) => {
+  res.send('Hello');
+});
+
 app.get("/vote", (req, res) => {
   const payload = req.query;
-  client.get(payload.name, (err, count) => {
+  redisClient.get(payload.name, (err, count) => {
+    if (!count) {
+      count = "0";
+    }
     res.send(count);
   });
 });
