@@ -1,5 +1,23 @@
 version: "3"
 services:
+  # nginx:
+  #   restart: always
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: ./nginx
+  #   ports:
+  #     - '3050:80'
+  frontend:
+    build:
+      dockerfile: Dockerfile
+      context: './frontend'
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app
+    ports:
+      - 3000:3000
+    stdin_open: true
+    command: npm start
   backend:
     restart: on-failure
     build:

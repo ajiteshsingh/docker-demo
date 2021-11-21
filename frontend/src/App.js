@@ -27,7 +27,7 @@ function App() {
       <Row>
         {teams.map((team) => {
           return (
-            <Col md={4}>
+            <Col md={4} key={team._id}>
               <VotingCard
                 team={team}
                 incrementVoteCount={(teamId) => incrementVoteCount(teamId)}
